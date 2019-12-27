@@ -1,8 +1,9 @@
 import React from 'react';
 import {connect} from "react-redux";
 import mapStateToProps from "react-redux/lib/connect/mapStateToProps";
-import {getallbook} from "../actions";
+import {editbook, getallbook} from "../actions";
 import Book from "./book";
+import EditBook from "./editbook";
 
 class App extends React.Component {
     componentDidMount() {
@@ -14,7 +15,8 @@ class App extends React.Component {
         // x.map(book => (console.log(book)))
         return (
             <div>
-                {x.map(book=><Book key={book.id} book={book} />) }
+                {x.map(book=>( book.edited ? <EditBook book={book} key={book.id} /> :
+                    <Book key={book.id} book={{...book,edited:false}} delete={this.props.onDeleteBook} edit={this.props.onEditBook} />))}
 
             </div>
         );
@@ -31,13 +33,15 @@ const d = dispach => {
 
 };
 
+
 export default connect(
     state => ({
         books: state.book
     }),
     dispach => {
         return {
-            getallbooks: () => dispach(getallbook())
+            getallbooks: () => dispach(getallbook()),
+            onEditBook:(id)=> dispach(editbook(id))
         }
 
     }
